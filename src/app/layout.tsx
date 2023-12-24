@@ -1,11 +1,14 @@
 import "@/styles/globals.css";
 
-import { Inter } from "next/font/google";
-import { cookies } from "next/headers";
+import { Inter as FontSans } from "next/font/google";
+import { cn } from "@/lib/utils";
+import Providers from "./_components/providers";
+import Header from "./_components/header";
+import Player from "./_components/player/player";
+import { Toaster } from "@/components/ui/sonner";
+import { getServerAuthSession } from "@/server/auth";
 
-import { TRPCReactProvider } from "@/trpc/react";
-
-const inter = Inter({
+export const fontSans = FontSans({
   subsets: ["latin"],
   variable: "--font-sans",
 });
@@ -16,17 +19,33 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
+  const session = await getServerAuthSession();
+  const content = session ? (
+    <>
+      {children}
+      <Player />
+    </>
+  ) : (
+    "Veuillez vous connecter"
+  );
   return (
-    <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider cookies={cookies().toString()}>
-          {children}
-        </TRPCReactProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={cn(
+          "min-h-screen bg-background font-sans antialiased",
+          fontSans.variable,
+        )}
+      >
+        <Providers>
+          <Header />
+          {content}
+          <Toaster />
+        </Providers>
       </body>
     </html>
   );
