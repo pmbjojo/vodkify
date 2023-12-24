@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
+import Cover from "./cover";
 
 export default function TrackCard({ track }: Readonly<{ track: Track }>) {
   const utils = api.useUtils();
@@ -38,14 +39,11 @@ export default function TrackCard({ track }: Readonly<{ track: Track }>) {
       </CardHeader>
       <CardContent>
         {track.album.images[0] ? (
-          <ImageNext
-            key={track.album.images[0].url}
-            className="rounded-lg"
+          <Cover
             src={track.album.images[0].url}
-            alt="albumcover"
-            placeholder="empty"
             height={track.album.images[0].height}
             width={track.album.images[0].width}
+            key={track.album.images[0].url}
           />
         ) : null}
       </CardContent>
