@@ -8,7 +8,6 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import ImageNext from "next/image";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";

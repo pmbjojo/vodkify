@@ -15,7 +15,7 @@ export default async function Providers({
         disableTransitionOnChange
       >
         {children}
-        {/* <ReactQueryDevtools /> */}
+        <ReactQueryDevtools />
       </ThemeProvider>
     </TRPCReactProvider>
   );

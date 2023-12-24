@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
 import Cover from "../cover";
 import DeviceSelector from "./device-selector";
+import { type Track } from "@spotify/web-api-ts-sdk";
 
 export default function Player() {
   const { data: currentlyPlayingTrack } =
@@ -35,19 +36,18 @@ export default function Player() {
     plabackState?.device.volume_percent ?? 50,
   );
   if (!plabackState) return null;
+  const track = currentlyPlayingTrack?.item as Track;
   return (
     <footer className="sticky bottom-0 z-50 flex items-center gap-3 border-t bg-background p-2">
       <div className="flex w-1/6 items-center text-wrap">
         <Cover
-          src={currentlyPlayingTrack?.item.album.images[2].url}
-          width={currentlyPlayingTrack?.item.album.images[2].width}
-          height={currentlyPlayingTrack?.item.album.images[2].height}
+          src={track.album.images[2]?.url}
+          width={track.album.images[2]?.width}
+          height={track.album.images[2]?.height}
         />
         <div className="flex flex-col p-2">
           <div>{currentlyPlayingTrack?.item?.name}</div>
-          <div>
-            {currentlyPlayingTrack?.item?.artists.map((artist) => artist.name)}
-          </div>
+          <div>{track.artists.map((artist) => artist.name)}</div>
         </div>
       </div>
       <div className={"w-1/6"}>

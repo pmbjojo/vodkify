@@ -6,10 +6,11 @@ export default function Cover({
   height,
   width,
 }: Readonly<{
-  src: string;
-  height: number;
-  width: number;
+  src?: string;
+  height?: number;
+  width?: number;
 }>) {
+  if (!src || !height || width) return;
   return (
     <Image
       className="rounded-lg"

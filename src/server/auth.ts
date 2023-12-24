@@ -3,7 +3,7 @@ import {
   getServerSession,
   type DefaultSession,
   type NextAuthOptions,
-  TokenSet,
+  type TokenSet,
 } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 
@@ -66,6 +66,7 @@ export const authOptions: NextAuthOptions = {
     //   return token;
     // },
     async jwt({ token, account }) {
+      const expires_at = token.expires_at as number;
       if (account) {
         // Save the access token and refresh token in the JWT on the initial login
         return {
@@ -73,14 +74,14 @@ export const authOptions: NextAuthOptions = {
           expires_at: account.expires_at,
           refresh_token: account.refresh_token,
         };
-      } else if (Date.now() < token.expires_at * 1000) {
+      } else if (Date.now() < expires_at * 1000) {
         // If the access token has not expired yet, return it
         return token;
       } else {
         // If the access token has expired, try to refresh it
         try {
           const s = await Spotify.getInstance();
-          const a = await s.authenticate();
+          await s.authenticate();
           const t = await s.getAccessToken();
           // https://accounts.google.com/.well-known/openid-configuration
           // We need the `token_endpoint`.
