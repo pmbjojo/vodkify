@@ -11,6 +11,7 @@ import Cover from "../cover";
 import DeviceSelector from "./device-selector";
 import { type Track } from "@spotify/web-api-ts-sdk";
 import Volume from "./volume";
+import Link from "next/link";
 
 export default function Player() {
   const { data: currentlyPlayingTrack } =
@@ -32,7 +33,20 @@ export default function Player() {
     },
   });
 
-  if (!plabackState) return null;
+  if (!plabackState)
+    return (
+      <footer className="sticky bottom-0 z-50 flex items-center justify-center gap-3 border-t bg-background p-2">
+        <Button asChild>
+          <Link
+            href="https://open.spotify.com/"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            Ouvrir Spotify
+          </Link>
+        </Button>
+      </footer>
+    );
   const track = currentlyPlayingTrack?.item as Track | null;
   return (
     <footer className="sticky bottom-0 z-50 flex items-center gap-3 border-t bg-background p-2">
@@ -63,8 +77,6 @@ export default function Player() {
       ) : (
         <Button
           variant="outline"
-          className=""
-          size="icon"
           onClick={() => play(plabackState.device?.id ?? "")}
         >
           <PlayIcon />
