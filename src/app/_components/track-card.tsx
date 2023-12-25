@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react";
+import { CheckIcon, LucideIcon, PlusIcon } from "lucide-react";
 import { api } from "@/trpc/react";
 import { toast } from "sonner";
 import Cover from "./cover";
@@ -17,6 +17,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useState } from "react";
 
 export default function TrackCard({ track }: Readonly<{ track: Track }>) {
   const utils = api.useUtils();
@@ -26,7 +27,17 @@ export default function TrackCard({ track }: Readonly<{ track: Track }>) {
       await utils.spotify.getUsersQueue.invalidate();
       toast.success(`${track.name} ajouté à la queue`, {});
     },
+    onError: (err) => {
+      toast.error("Une erreur est survenue", { description: err.message });
+    },
   });
+  const [icon, setIcon] = useState(<PlusIcon />);
+  const handleClick = () => {
+    setIcon(<CheckIcon />);
+    setTimeout(() => {
+      setIcon(<PlusIcon />);
+    }, 2000);
+  };
   return (
     <Card className="transition duration-200 hover:scale-105 hover:shadow-2xl">
       <CardHeader>
@@ -43,10 +54,12 @@ export default function TrackCard({ track }: Readonly<{ track: Track }>) {
                       .length > 0
                   )
                     return toast.error("Ce titre est déjà dans la queue");
+                  handleClick();
                   mutate(track.uri);
                 }}
+                variant="secondary"
               >
-                <PlusIcon />
+                {icon}
               </Button>
             </TooltipTrigger>
             <TooltipContent>
