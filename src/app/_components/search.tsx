@@ -13,6 +13,7 @@ export default function Search() {
   return (
     <div className="flex gap-3">
       <Input
+        className="min-w-24"
         type="text"
         placeholder="Recherche"
         value={search}
@@ -24,7 +25,7 @@ export default function Search() {
           if (e.key === "Enter") lookFor();
         }}
       />
-      <Button onClick={() => lookFor()}>
+      <Button onClick={() => lookFor()} className="hidden md:block">
         <SearchIcon />
       </Button>
     </div>
