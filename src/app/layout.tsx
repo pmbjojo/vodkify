@@ -30,7 +30,10 @@ export default async function RootLayout({
       <Player />
     </>
   ) : (
-    "Veuillez vous connecter"
+    <main className="flex min-h-screen flex-col items-center justify-center gap-5">
+      <h1 className="text-5xl">Bienvenue</h1>
+      <p>Vous devez vous connecter pour utiliser Vodkify</p>
+    </main>
   );
   return (
     <html lang="en" suppressHydrationWarning>
