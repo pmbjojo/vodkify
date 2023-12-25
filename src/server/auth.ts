@@ -44,6 +44,14 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   callbacks: {
     session: async ({ session, user }) => {
+      if (session.user.expiresAt < Date.now()) {
+        const account = await db.account.findFirst({
+          where: { userId: user.id },
+        });
+        const rm = await db.account.delete({
+          where: { id: account?.id },
+        });
+      }
       const account = await db.account.findFirst({
         where: { userId: user.id },
       });
