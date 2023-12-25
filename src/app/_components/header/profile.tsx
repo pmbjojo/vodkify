@@ -30,7 +30,6 @@ export default async function Profile() {
             <AvatarImage src={user.image ?? undefined} />
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
-          {/* {user.name} */}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
