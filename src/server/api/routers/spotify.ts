@@ -42,7 +42,6 @@ export const spotifyRouter = createTRPCRouter({
         input.limit as MaxInt<50>,
         input.cursor?.offset ?? 0,
       );
-      console.log("search", search);
       const offset = input.cursor?.offset ?? 0;
       const nextCursor: typeof input.cursor = {
         offset: offset + input.limit,
