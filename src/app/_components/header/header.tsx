@@ -1,5 +1,5 @@
 import Profile from "../profile";
-import Search from "../search";
+import Search from "./search";
 import { ThemeToggle } from "./theme-toggle";
 
 export default function Header() {
