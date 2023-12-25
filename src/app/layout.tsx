@@ -32,6 +32,9 @@ export default async function RootLayout({
   ) : (
     <main className="flex min-h-screen flex-col items-center justify-center gap-5">
       <h1 className="text-5xl">Bienvenue</h1>
+      <p>
+        Cette application fonctionne uniquement avec un compte spotify premium
+      </p>
       <p>Vous devez vous connecter pour utiliser Vodkify</p>
     </main>
   );
