@@ -43,12 +43,14 @@ export default function Queue() {
                     height={track.album.images[2]?.height}
                     width={track.album.images[2]?.width}
                   />
-                  <div className="flex flex-col gap-1">
-                    <p>{track.name}</p>
+                  <div className="flex basis-auto flex-col gap-1">
+                    <p className="text-right">{track.name}</p>
                     {track.artists[0] && (
-                      <Badge key={track.artists[0].id}>
-                        {track.artists[0].name}
-                      </Badge>
+                      <div className="flex flex-row-reverse">
+                        <Badge key={track.artists[0].id}>
+                          {track.artists[0].name}
+                        </Badge>
+                      </div>
                     )}
                   </div>
                 </div>
