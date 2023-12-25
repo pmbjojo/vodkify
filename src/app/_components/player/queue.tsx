@@ -4,7 +4,6 @@ import React from "react";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
@@ -13,8 +12,9 @@ import { Button } from "@/components/ui/button";
 import { api } from "@/trpc/react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import Cover from "../cover";
-import { ListMusicIcon, XIcon } from "lucide-react";
+import { ListMusicIcon } from "lucide-react";
 import { type Track } from "@spotify/web-api-ts-sdk";
+import { Badge } from "@/components/ui/badge";
 
 export default function Queue() {
   const { data: queue } = api.spotify.getUsersQueue.useQuery();
@@ -25,31 +25,32 @@ export default function Queue() {
           <ListMusicIcon />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="flex flex-col">
         <SheetHeader>
           <SheetTitle>Queue</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when youre done.
-          </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="mb-10 mt-10 h-5/6">
-          <div className="pr-4">
+        <ScrollArea className="flex-grow">
+          <div className="flex flex-col gap-3 pr-4">
             {queue?.queue.map((track) => {
               track = track as Track;
               return (
                 <div
                   key={track.id}
-                  className="mb-1 flex items-center justify-between rounded-md border p-1"
+                  className="flex items-center justify-between rounded-md border bg-card p-2"
                 >
                   <Cover
                     src={track.album.images[2]?.url}
                     height={track.album.images[2]?.height}
                     width={track.album.images[2]?.width}
                   />
-                  {track.name}
-                  <Button variant="destructive">
-                    <XIcon />
-                  </Button>
+                  <div className="flex flex-col gap-1">
+                    <p>{track.name}</p>
+                    {track.artists[0] && (
+                      <Badge key={track.artists[0].id}>
+                        {track.artists[0].name}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               );
             })}
