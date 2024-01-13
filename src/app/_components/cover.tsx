@@ -1,26 +1,25 @@
 import React from "react";
-import Image from "next/image";
+import NextImage from "next/image";
+import { type Image } from "@spotify/web-api-ts-sdk";
 
 export default function Cover({
-  src,
-  height,
-  width,
   className,
+  image,
+  size,
 }: Readonly<{
-  src?: string;
-  height?: number;
-  width?: number;
   className?: string;
+  image: Image | undefined;
+  size?: number;
 }>) {
-  if (!src || !height || !width) return;
+  if (!image) return null;
   return (
-    <Image
+    <NextImage
       className={`rounded-lg ${className}`}
-      src={src}
+      src={image.url}
       alt="albumcover"
       placeholder="empty"
-      height={height}
-      width={width}
+      height={size ?? image.height}
+      width={size ?? image.width}
     />
   );
 }

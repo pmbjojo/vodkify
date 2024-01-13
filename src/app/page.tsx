@@ -1,45 +1,51 @@
 "use client";
 
-import { Loader2, SearchIcon } from "lucide-react";
-import TrackCard from "./_components/track-card";
-import { useSearchParams } from "next/navigation";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { api } from "@/trpc/react";
+import { useSearchParams } from "next/navigation";
+import React, { useEffect } from "react";
+import SearchCard from "./_components/search-card";
 import { Button } from "@/components/ui/button";
+import { useInView } from "react-intersection-observer";
+import { Loader2 } from "lucide-react";
+import EmptySearch from "./_components/empty-search";
 
-export default function Home() {
+export default function Page() {
+  const { ref, inView } = useInView();
   const searchParams = useSearchParams();
-  const query = searchParams.get("search") ?? "";
-  const {
-    data: search,
-    fetchNextPage,
-    isFetching,
-  } = api.spotify.search.useInfiniteQuery(
-    {
-      limit: 10,
-      query,
-    },
-    { getNextPageParam: (lastPage) => lastPage.nextCursor },
-  );
-  if (!search)
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
-        <SearchIcon className="h-32 w-32" />
-        Veuillez faire une recherche
-      </main>
+  const query = searchParams.get("search") ?? "muse";
+  const [search, { isFetching, fetchNextPage }] =
+    api.spotify.search.useSuspenseInfiniteQuery(
+      {
+        limit: 10,
+        query: query,
+      },
+      {
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+      },
     );
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage().catch((err) => {
+        console.error(err);
+      });
+    }
+  }, [fetchNextPage, inView]);
+  if (query === "") return <EmptySearch />;
   return (
-    <main className="flex min-h-screen flex-col gap-6 p-6">
-      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
-        {search?.pages.map((page) =>
-          page.items.tracks.items.map((track) => {
-            return <TrackCard key={track.id} track={track} />;
-          }),
+    <ScrollArea>
+      <div className="grid gap-6 p-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+        {search?.pages.map(
+          (page) =>
+            page.items?.tracks.items.map((track) => {
+              return <SearchCard key={track.id} track={track} />;
+            }),
         )}
       </div>
-      <Button onClick={() => fetchNextPage()} className="w-full">
+      <Button onClick={() => fetchNextPage()} className="w-full" ref={ref}>
         {isFetching && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
         Plus
       </Button>
-    </main>
+    </ScrollArea>
   );
 }

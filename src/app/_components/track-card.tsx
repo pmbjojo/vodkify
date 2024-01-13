@@ -1,91 +1,36 @@
-import { type Track } from "@spotify/web-api-ts-sdk";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { CheckIcon, LucideIcon, PlusIcon } from "lucide-react";
-import { api } from "@/trpc/react";
-import { toast } from "sonner";
+import { Card } from "@/components/ui/card";
+import { type Episode, type Track } from "@spotify/web-api-ts-sdk";
 import Cover from "./cover";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useState } from "react";
-
-export default function TrackCard({ track }: Readonly<{ track: Track }>) {
-  const utils = api.useUtils();
-  const { data: queue } = api.spotify.getUsersQueue.useQuery();
-  const { mutate } = api.spotify.addItemToPlaybackQueue.useMutation({
-    onSuccess: async () => {
-      await utils.spotify.getUsersQueue.invalidate();
-      toast.success(`${track.name} ajouté à la queue`, {});
-    },
-    onError: (err) => {
-      toast.error("Une erreur est survenue", { description: err.message });
-    },
-  });
-  const [icon, setIcon] = useState(<PlusIcon />);
-  const handleClick = () => {
-    setIcon(<CheckIcon />);
-    setTimeout(() => {
-      setIcon(<PlusIcon />);
-    }, 2000);
-  };
+import { Badge } from "@/components/ui/badge";
+export default function TrackCard({
+  track,
+  playedAt,
+}: Readonly<{
+  track: Track | Episode | undefined;
+  playedAt?: string;
+}>) {
+  if (!track) return null;
+  if (track.type === "episode") return null;
+  track = track as Track;
   return (
-    <Card className="transition duration-200 hover:scale-105 hover:shadow-2xl">
-      <CardHeader>
-        <CardTitle className="flex items-center">
-          <div className="truncate pr-1">{track.name}</div>
-          <div className="flex-grow" />
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => {
-                  if (
-                    queue &&
-                    queue.queue.filter((item) => item.uri === track.uri)
-                      .length > 0
-                  )
-                    return toast.error("Ce titre est déjà dans la queue");
-                  handleClick();
-                  mutate(track.uri);
-                }}
-                variant="secondary"
-              >
-                {icon}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Ajouter à la queue</p>
-            </TooltipContent>
-          </Tooltip>
-        </CardTitle>
-        <CardDescription>
-          <div className="text-wrap">{track.album.name}</div>
-          <div className="flex gap-1 truncate">
-            {track.artists.map((artist) => (
-              <Badge key={artist.id}>{artist.name}</Badge>
-            ))}
+    <Card className="flex items-center justify-between p-2">
+      <Cover image={track.album.images[2]} />
+      <div className="flex basis-auto flex-col gap-1">
+        <p className="text-right">{track.name}</p>
+        {playedAt && (
+          <p className="text-right text-sm font-light">
+            {Intl.DateTimeFormat("fr-FR", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            }).format(new Date(playedAt))}
+          </p>
+        )}
+        {track.artists[0] && (
+          <div className="flex flex-row-reverse">
+            <Badge>{track.artists[0].name}</Badge>
           </div>
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        {track.album.images[0] ? (
-          <Cover
-            src={track.album.images[0].url}
-            height={track.album.images[0].height}
-            width={track.album.images[0].width}
-            key={track.album.images[0].url}
-          />
-        ) : null}
-      </CardContent>
+        )}
+      </div>
     </Card>
   );
 }

@@ -1,20 +1,46 @@
 "use client";
 
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 import { useState } from "react";
 
 import { type AppRouter } from "@/server/api/root";
 import { getUrl, transformer } from "./shared";
+import { toast } from "sonner";
 
 export const api = createTRPCReact<AppRouter>();
+
+const queryCache = new QueryCache({
+  onError: (error) => {
+    if (error instanceof Error) {
+      return toast.error(error.message);
+    }
+    toast.error("Une erreur inconnue est survenue");
+  },
+});
+
+const mutationCache = new MutationCache({
+  onError: (error) => {
+    if (error instanceof Error) {
+      return toast.error(error.message);
+    }
+    toast.error("Une erreur inconnue est survenue");
+  },
+});
 
 export function TRPCReactProvider(props: {
   children: React.ReactNode;
   cookies: string;
 }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(
+    () => new QueryClient({ queryCache, mutationCache }),
+  );
 
   const [trpcClient] = useState(() =>
     api.createClient({

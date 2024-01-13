@@ -5,6 +5,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Slider } from "@/components/ui/slider";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { api } from "@/trpc/react";
 import {
   Volume1Icon,
@@ -12,25 +17,34 @@ import {
   VolumeIcon,
   VolumeXIcon,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Volume({
   currentVolume,
 }: Readonly<{ currentVolume: number | null }>) {
-  const [volume, setVolume] = useState(currentVolume ?? 50);
+  const defaultVolume = 50;
+  const [volume, setVolume] = useState(currentVolume ?? defaultVolume);
   const { mutate: setPlaybackVolume } =
     api.spotify.setPlaybackVolume.useMutation();
-  let Icon = Volume2Icon;
-  if (volume === 0) Icon = VolumeXIcon;
-  if (volume < (1 / 3) * 100) Icon = VolumeIcon;
-  if (volume < (2 / 3) * 100) Icon = Volume1Icon;
+  const [icon, setIcon] = useState(<Volume1Icon />);
+  useEffect(() => {
+    if (volume === 0) setIcon(<VolumeXIcon />);
+    if (volume >= 1 && volume < (1 / 3) * 100) setIcon(<VolumeIcon />);
+    if (volume >= (1 / 3) * 100 && volume < (2 / 3) * 100)
+      setIcon(<Volume1Icon />);
+    if (volume >= (2 / 3) * 100) setIcon(<Volume2Icon />);
+  }, [volume]);
+
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline">
-          <Icon />
-        </Button>
-      </PopoverTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <PopoverTrigger asChild>
+            <Button variant="outline">{icon}</Button>
+          </PopoverTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Volume</TooltipContent>
+      </Tooltip>
       <PopoverContent>
         <Slider
           defaultValue={[volume]}
@@ -40,7 +54,7 @@ export default function Volume({
             setPlaybackVolume(volume);
           }}
           onValueChange={(value) => {
-            setVolume(value[0] ?? 50);
+            setVolume(value[0] ?? defaultVolume);
           }}
           step={1}
         />

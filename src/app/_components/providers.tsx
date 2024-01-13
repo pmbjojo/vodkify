@@ -1,9 +1,9 @@
 import { ThemeProvider } from "./theme-provider";
 import { TRPCReactProvider } from "@/trpc/react";
 import { cookies } from "next/headers";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export default async function Providers({
   children,
@@ -18,8 +18,8 @@ export default async function Providers({
       >
         <TooltipProvider>
           {children}
+          <ReactQueryDevtools initialIsOpen={false} />
           <Toaster richColors closeButton />
-          <ReactQueryDevtools />
         </TooltipProvider>
       </ThemeProvider>
     </TRPCReactProvider>

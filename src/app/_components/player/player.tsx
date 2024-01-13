@@ -1,94 +1,65 @@
 "use client";
 
-import { PlayIcon, PauseIcon } from "lucide-react";
 import React from "react";
-import { Button } from "@/components/ui/button";
-import Queue from "./queue";
+import Tracks from "./tracks";
 import { api } from "@/trpc/react";
-import { getMinutesSeconds } from "@/lib/utils";
+import { cn, getMinutesSeconds } from "@/utils/utils";
 import { Progress } from "@/components/ui/progress";
 import Cover from "../cover";
 import DeviceSelector from "./device-selector";
 import { type Track } from "@spotify/web-api-ts-sdk";
 import Volume from "./volume";
-import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
+import PlayPauseButton from "./play-pause-button";
+import EmptyPlayer from "./empty-player";
 
-export default function Player() {
-  const { data: currentlyPlayingTrack } =
-    api.spotify.getCurrentlyPlayingTrack.useQuery();
-  const { data: plabackState } = api.spotify.getPlaybackState.useQuery(
+export default function Player({
+  className,
+}: Readonly<{ className?: string }>) {
+  const [plabackState] = api.spotify.getPlaybackState.useSuspenseQuery(
     undefined,
-    { refetchInterval: 500 },
+    {
+      refetchInterval: 500,
+    },
   );
-
-  const utils = api.useUtils();
-  const { mutate: play } = api.spotify.startResumePlayback.useMutation({
-    async onSuccess() {
-      await utils.spotify.invalidate();
-    },
-  });
-  const { mutate: pause } = api.spotify.pausePlayback.useMutation({
-    async onSuccess() {
-      await utils.spotify.invalidate();
-    },
-  });
-
-  if (!plabackState)
-    return (
-      <footer className="sticky bottom-0 z-50 flex items-center justify-center gap-3 border-t bg-background p-2">
-        <Button asChild>
-          <Link
-            href="https://open.spotify.com/"
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            Ouvrir Spotify
-          </Link>
-        </Button>
-      </footer>
-    );
-  const track = currentlyPlayingTrack?.item as Track | null;
+  if (!plabackState) return <EmptyPlayer />;
+  if (plabackState.currently_playing_type === "episode") {
+    return "Le player ne supporte pas les podcasts";
+  }
+  const track = plabackState.item as Track | undefined;
   return (
-    <footer className="sticky bottom-0 z-50 flex items-center gap-3 border-t bg-background p-2">
-      <Cover
-        className="hidden sm:block"
-        src={track?.album.images[2]?.url}
-        width={track?.album.images[2]?.width}
-        height={track?.album.images[2]?.height}
-      />
-      <div className="flex flex-col p-2">
-        <div>{currentlyPlayingTrack?.item?.name}</div>
-        <div>{track?.artists.map((artist) => artist.name)}</div>
+    <footer
+      className={cn(
+        "z-50 flex items-center gap-3 border-t bg-background p-2",
+        className,
+      )}
+    >
+      <Cover className="hidden sm:block" image={track?.album.images[2]} />
+      <div className="flex max-w-40 flex-col gap-1">
+        <div className="truncate text-nowrap">{plabackState.item?.name}</div>
+        <div>
+          <Badge className="truncate text-nowrap">
+            {track?.artists[0]?.name}
+          </Badge>
+        </div>
       </div>
-      {getMinutesSeconds(plabackState.progress_ms)}
+      <div>{getMinutesSeconds(plabackState.progress_ms)}</div>
       <Progress
         className="hidden flex-grow sm:block"
-        value={(plabackState.progress_ms * 100) / plabackState.item.duration_ms}
+        value={
+          (plabackState.progress_ms * 100) / plabackState.item?.duration_ms
+        }
       />
-      {getMinutesSeconds(plabackState.item.duration_ms)}
-
-      {plabackState?.is_playing ? (
-        <Button
-          variant="outline"
-          onClick={() => pause(plabackState.device.id ?? "")}
-        >
-          <PauseIcon />
-        </Button>
-      ) : (
-        <Button
-          variant="outline"
-          onClick={() => play(plabackState.device?.id ?? "")}
-        >
-          <PlayIcon />
-        </Button>
-      )}
-      <Volume currentVolume={plabackState.device.volume_percent} />
+      <div className="hidden sm:block">
+        {getMinutesSeconds(plabackState.item?.duration_ms)}
+      </div>
+      <PlayPauseButton />
+      <Volume currentVolume={plabackState.device?.volume_percent} />
       <DeviceSelector
-        currentDevice={plabackState.device.name}
-        className="hidden w-96 sm:flex"
+        currentDevice={plabackState.device?.name}
+        className="w-96"
       />
-      <div className="flex-grow sm:hidden" />
-      <Queue />
+      <Tracks />
     </footer>
   );
 }
