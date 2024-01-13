@@ -50,6 +50,9 @@ dependencies:
   '@radix-ui/react-tooltip':
     specifier: ^1.0.7
     version: 1.0.7(@types/react-dom@18.2.18)(@types/react@18.2.47)(react-dom@18.2.0)(react@18.2.0)
+  '@react-hooks-library/core':
+    specifier: ^0.6.0
+    version: 0.6.0(react@18.2.0)
   '@spotify/web-api-ts-sdk':
     specifier: ^1.1.2
     version: 1.1.2
@@ -77,6 +80,9 @@ dependencies:
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
+  i:
+    specifier: ^0.3.7
+    version: 0.3.7
   lucide-react:
     specifier: ^0.307.0
     version: 0.307.0(react@18.2.0)
@@ -1576,6 +1582,19 @@ packages:
     resolution: {integrity: sha512-fyrgCaedtvMg9NK3en0pnOYJdtfwxUcNolezkNPUsoX57X8oQk+NkqcvzHXD2uKNij6GXmWU9NDru2IWjrO4BQ==}
     dependencies:
       '@babel/runtime': 7.23.8
+    dev: false
+
+  /@react-hooks-library/core@0.6.0(react@18.2.0):
+    resolution: {integrity: sha512-GfkoQw82/rBrrj7Yv2oEP9V8IByBLRtfxzIs/cCwH3ZT7bUxcbD7B1hT1Au7AGrzSrGaLzKKJ61mc1a21VuK6g==}
+    peerDependencies:
+      react: '>=16.9.0'
+    dependencies:
+      '@react-hooks-library/shared': 0.6.0
+      react: 18.2.0
+    dev: false
+
+  /@react-hooks-library/shared@0.6.0:
+    resolution: {integrity: sha512-3OV9hhZ3eNBYLGUn/SFJ4VQou9f72fuviNNX1Tj6Dfk1Ck6oeZ1HVI7omrRxrBaNEE0eKTyONwTPjEFhsUrZVg==}
     dev: false
 
   /@rushstack/eslint-patch@1.6.1:
@@ -3371,6 +3390,11 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
     dev: true
+
+  /i@0.3.7:
+    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
+    engines: {node: '>=0.4'}
+    dev: false
 
   /ignore@5.3.0:
     resolution: {integrity: sha512-g7dmpshy+gD7mh88OC9NwSGTKoc3kyLAZQRU1mt53Aw/vnvfXnbC+F/7F7QoYVKbV+KNvJx8wArewKy1vXMtlg==}

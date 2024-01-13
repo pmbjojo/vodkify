@@ -1,5 +1,12 @@
 import { PlusIcon, CheckIcon, BanIcon, Loader2Icon } from "lucide-react";
 import { useEffect, useState } from "react";
+import {
+  BreakPointHooks,
+  breakpointsTailwind,
+} from "@react-hooks-library/core";
+
+export const { useGreater, useBetween, useSmaller } =
+  BreakPointHooks(breakpointsTailwind);
 
 export const useIconTimeout = (
   status: "error" | "idle" | "loading" | "success",
