@@ -33,8 +33,8 @@ export default function Page() {
   }, [fetchNextPage, inView]);
   if (query === "") return <EmptySearch />;
   return (
-    <ScrollArea>
-      <div className="grid gap-6 p-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
+    <ScrollArea className="w-full">
+      <div className="grid grid-cols-1 gap-6 overflow-x-hidden p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {search?.pages.map(
           (page) =>
             page.items?.tracks.items.map((track) => {
