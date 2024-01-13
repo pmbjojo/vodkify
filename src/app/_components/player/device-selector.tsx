@@ -12,27 +12,32 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/utils/utils";
 import { api } from "@/trpc/react";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 export default function DeviceSelector({
-  currentDevice,
   className,
 }: Readonly<{
-  currentDevice: string | null;
   className?: string;
 }>) {
+  const [plabackState] = api.spotify.getPlaybackState.useSuspenseQuery();
   const { data: devices } = api.spotify.getAvailableDevices.useQuery();
   const { mutate: transferPlayback } =
     api.spotify.transferPlayback.useMutation();
+
   return (
-    <Select onValueChange={(device) => transferPlayback({ device })}>
+    <Select
+      onValueChange={(device) => transferPlayback({ device })}
+      defaultValue={plabackState?.device.id ?? undefined}
+    >
       <Tooltip>
         <TooltipTrigger asChild>
-          <SelectTrigger className={cn(className, "hover:bg-secondary/80")}>
-            <SelectValue placeholder={currentDevice} />
-          </SelectTrigger>
+          <Button asChild variant="outline">
+            <SelectTrigger className={className}>
+              <SelectValue placeholder="Appareil" />
+            </SelectTrigger>
+          </Button>
         </TooltipTrigger>
         <TooltipContent>Appareil</TooltipContent>
       </Tooltip>
@@ -40,7 +45,7 @@ export default function DeviceSelector({
         <SelectGroup>
           <SelectLabel>Appareil</SelectLabel>
           {devices?.devices?.map((device) => (
-            <SelectItem value={device.id ?? ""} key={device.id}>
+            <SelectItem value={device.id ?? "Inconnu"} key={device.id}>
               {device.name}
             </SelectItem>
           ))}

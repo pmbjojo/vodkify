@@ -45,7 +45,7 @@ export default function Player({
       </div>
       <div>{getMinutesSeconds(plabackState.progress_ms)}</div>
       <Progress
-        className="hidden flex-grow sm:block"
+        className="flex flex-grow"
         value={
           (plabackState.progress_ms * 100) / plabackState.item?.duration_ms
         }
@@ -55,10 +55,6 @@ export default function Player({
       </div>
       <PlayPauseButton />
       <Volume currentVolume={plabackState.device?.volume_percent} />
-      <DeviceSelector
-        currentDevice={plabackState.device?.name}
-        className="w-96"
-      />
       <Tracks />
     </footer>
   );

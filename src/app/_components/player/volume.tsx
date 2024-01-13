@@ -18,6 +18,7 @@ import {
   VolumeXIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import DeviceSelector from "./device-selector";
 
 export default function Volume({
   currentVolume,
@@ -45,7 +46,7 @@ export default function Volume({
         </TooltipTrigger>
         <TooltipContent>Volume</TooltipContent>
       </Tooltip>
-      <PopoverContent>
+      <PopoverContent className="flex flex-col gap-5">
         <Slider
           defaultValue={[volume]}
           max={100}
@@ -58,6 +59,7 @@ export default function Volume({
           }}
           step={1}
         />
+        <DeviceSelector />
       </PopoverContent>
     </Popover>
   );
