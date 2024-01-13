@@ -30,7 +30,7 @@ export default function RootLayout({
       <html lang="en" suppressHydrationWarning>
         <body
           className={cn(
-            "flex h-screen touch-pan-y flex-col  bg-background font-sans antialiased ",
+            "flex h-dvh touch-pan-y flex-col  bg-background font-sans antialiased ",
             inter.variable,
           )}
         >
