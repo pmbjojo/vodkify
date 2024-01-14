@@ -16,7 +16,7 @@ const inter = Inter({
 
 export const metadata = {
   title: "Vodkify",
-  description: "Spotify app for blissful people",
+  description: "Spotify app for blissful events",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

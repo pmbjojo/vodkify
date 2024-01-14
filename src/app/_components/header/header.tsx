@@ -10,7 +10,7 @@ export default async function Header() {
       <Link href="/">
         <h1 className="text-2xl font-bold tracking-tight">Vodkify</h1>
       </Link>
-      <small className="hidden md:block">Spotify client for drunk people</small>
+      <small className="hidden md:block">Spotify app for blissful events</small>
       <div className="flex-grow" />
       <ThemeToggle />
       <SignedIn>
