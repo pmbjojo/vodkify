@@ -5,10 +5,10 @@ import { dark } from "@clerk/themes";
 import { useTheme } from "next-themes";
 
 export default function UserMenu() {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
   return (
     <UserButton
-      appearance={{ baseTheme: theme === "dark" ? dark : undefined }}
+      appearance={{ baseTheme: resolvedTheme === "dark" ? dark : undefined }}
     />
   );
 }
