@@ -13,12 +13,13 @@ import EmptySearch from "./_components/empty-search";
 export default function Page() {
   const { ref, inView } = useInView();
   const searchParams = useSearchParams();
-  const query = searchParams.get("search") ?? "muse";
+  const param = searchParams.get("search");
+  const query = !param ? "muse" : param;
   const [search, { isFetching, fetchNextPage }] =
     api.spotify.search.useSuspenseInfiniteQuery(
       {
         limit: 10,
-        query: query,
+        query,
       },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
@@ -31,7 +32,7 @@ export default function Page() {
       });
     }
   }, [fetchNextPage, inView]);
-  if (query === "") return <EmptySearch />;
+  if (param === "") return <EmptySearch />;
   return (
     <ScrollArea className="w-full">
       <div className="grid grid-cols-1 gap-6 overflow-x-hidden p-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
