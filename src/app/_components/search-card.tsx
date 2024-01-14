@@ -21,9 +21,6 @@ export default function SearchCard({ track }: Readonly<{ track: Track }>) {
         await utils.spotify.getUserQueue.invalidate();
         toast.success(`${track.name} ajouté à la queue`, {});
       },
-      onError: (err) => {
-        toast.error("Une erreur est survenue", { description: err.message });
-      },
     });
   const { icon, variant } = useIconTimeout(status);
   const handleClick = () => {
