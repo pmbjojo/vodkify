@@ -19,7 +19,9 @@ export const api = createTRPCReact<AppRouter>();
 const queryCache = new QueryCache({
   onError: (error) => {
     if (error instanceof Error) {
-      return toast.error(error.message);
+      return toast.error("Une erreur est survenue", {
+        description: error.message,
+      });
     }
     toast.error("Une erreur inconnue est survenue");
   },
@@ -28,7 +30,9 @@ const queryCache = new QueryCache({
 const mutationCache = new MutationCache({
   onError: (error) => {
     if (error instanceof Error) {
-      return toast.error(error.message);
+      return toast.error("Une erreur est survenue", {
+        description: error.message,
+      });
     }
     toast.error("Une erreur inconnue est survenue");
   },
